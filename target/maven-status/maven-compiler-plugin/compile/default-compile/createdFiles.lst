@@ -6,3 +6,4 @@ com/medicin/demo/model/Medecin.class
 com/medicin/demo/controller/MedecinController.class
 com/medicin/demo/model/Patient.class
 com/medicin/demo/repository/MedecinRepository.class
+com/medicin/demo/controller/ViewController.class

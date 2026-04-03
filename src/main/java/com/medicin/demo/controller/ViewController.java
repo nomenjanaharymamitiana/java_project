@@ -62,12 +62,12 @@ public class ViewController {
         }
     }
     // 1. Afficher le formulaire pré-rempli
-@GetMapping("/medecin/modifier_docteur/{id}")
+@GetMapping("/medecin/modifierdocteur/{id}")
 public String afficherFormulaireModification(@PathVariable("id") String id, Model model) {
     Optional<Medecin> medecin = medecinRepository.findById(id);
     if (medecin.isPresent()) {
         model.addAttribute("medecin", medecin.get());
-        return "medecin/modifier"; // Nom du fichier HTML
+        return "medecin/modifier_docteur"; // Nom du fichier HTML
     }
     return "redirect:/medecin/liste";
 }
