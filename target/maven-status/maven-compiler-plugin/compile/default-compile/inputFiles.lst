@@ -1,0 +1,9 @@
+/home/mamitiana/Documents/medicin/demo/src/main/java/com/medicin/demo/controller/PatientController.java
+/home/mamitiana/Documents/medicin/demo/src/main/java/model/Patient.java
+/home/mamitiana/Documents/medicin/demo/src/main/java/model/Rdv.java
+/home/mamitiana/Documents/medicin/demo/src/main/java/model/Medecin.java
+/home/mamitiana/Documents/medicin/demo/src/main/java/com/medicin/demo/repository/PatientRepository.java
+/home/mamitiana/Documents/medicin/demo/src/main/java/com/medicin/demo/controller/ViewController.java
+/home/mamitiana/Documents/medicin/demo/src/main/java/com/medicin/demo/controller/MedecinController.java
+/home/mamitiana/Documents/medicin/demo/src/main/java/com/medicin/demo/DemoApplication.java
+/home/mamitiana/Documents/medicin/demo/src/main/java/com/medicin/demo/repository/MedecinRepository.java
