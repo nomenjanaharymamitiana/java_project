@@ -24,25 +24,25 @@ public class ViewController {
         return "medecin/index";
     }
 
-    @GetMapping("/medecin/liste")
+    @GetMapping("/medecin/liste-docteur")
     public String listeMedecins(Model model) {
         model.addAttribute("medecins", medecinRepository.findAll());
         return "medecin/liste"; 
     }
 
     // Affiche la page de login (quand on clique sur le bouton dans index.html)
-    @GetMapping("/login-docteur")
+    @GetMapping("/loginadmin")
     public String pageLogin() {
-        return "medecin/login_docteur";
+        return "medecin/login-admin";
     }
     //affiche la page d'acceuil 
-    @GetMapping("/M_acceuil")
+    @GetMapping("/Admin-acceuil")
     public String pageAcceuil() {
-        return "medecin/M_acceuil";
+        return "medecin/Admin-acceuil";
     }
 
     // Reçoit les données du formulaire de login
-    @PostMapping("/logindocteur")
+    @PostMapping("/loginadmin")
     public String authentification(@RequestParam("email") String email, 
                                    @RequestParam("password") String password, 
                                    Model model) {
@@ -54,13 +54,14 @@ public class ViewController {
     
         if (med.isPresent()) {
             System.out.println("DEBUG >>> MÉDECIN TROUVÉ : " + med.get().getNommed());
-            return "redirect:/M_acceuil";
+            return "redirect:/Admin-acceuil";
         } else {
             System.out.println("DEBUG >>> AUCUN MÉDECIN TROUVÉ DANS POSTGRES");
             model.addAttribute("error", "Email ou mot de passe incorrect");
-            return "login_docteur";
+            return "login-admin";
         }
     }
+    
     // 1. Afficher le formulaire pré-rempli
 @GetMapping("/medecin/modifierdocteur/{id}")
 public String afficherFormulaireModification(@PathVariable("id") String id, Model model) {

@@ -8,16 +8,18 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         body {
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 40px 0;
         }
         .choice-card {
             transition: all 0.3s ease;
             cursor: pointer;
             border: none;
             border-radius: 20px;
+            height: 100%; /* Pour que toutes les cartes aient la même hauteur */
         }
         .choice-card:hover {
             transform: translateY(-10px);
@@ -39,39 +41,54 @@
 <div class="container text-center">
     <div class="mb-5">
         <h1 class="display-3 fw-bold text-primary"><i class="fas fa-heartbeat me-3"></i>MediAdmin</h1>
-        <p class="lead text-muted">Système de gestion de rendez-vous médicaux en ligne</p>
+        <p class="lead text-muted">Système de gestion de rendez-vous médicaux — Fianarantsoa</p>
     </div>
 
     <div class="row justify-content-center g-4">
-        <div class="col-md-5">
-            <div class="card choice-card shadow-sm p-5">
+        
+        <div class="col-md-4">
+            <div class="card choice-card shadow-sm p-4">
                 <div class="icon-circle bg-info-subtle text-info">
                     <i class="fas fa-user-injured fa-3x"></i>
                 </div>
-                <h2 class="fw-bold">Espace Patient</h2>
-                <p class="text-muted">Consultez les médecins et demandez un rendez-vous en quelques clics.</p>
-                <a href="/patient" class="btn btn-info btn-lg rounded-pill text-white mt-3">
+                <h3 class="fw-bold">Patient</h3>
+                <p class="text-muted small">Consultez les médecins disponibles et demandez un rendez-vous en quelques secondes.</p>
+                <a href="/patient" class="btn btn-info btn-lg rounded-pill text-white mt-auto">
                     Je suis un Patient
                 </a>
             </div>
         </div>
 
-        <div class="col-md-5">
-            <div class="card choice-card shadow-sm p-5">
+        <div class="col-md-4">
+            <div class="card choice-card shadow-sm p-4">
                 <div class="icon-circle bg-primary-subtle text-primary">
                     <i class="fas fa-user-md fa-3x"></i>
                 </div>
-                <h2 class="fw-bold">Espace Docteur</h2>
-                <p class="text-muted">Gérez vos disponibilités, vos patients et votre planning quotidien.</p>
-                <a th:href="@{/login-docteur}" class="btn btn-primary btn-lg rounded-pill mt-3">
-                    Je suis un Docteur
+                <h3 class="fw-bold">Docteur</h3>
+                <p class="text-muted small">Gérez vos fiches patients, vos disponibilités et suivez votre planning quotidien.</p>
+                <a th:href="@{/login-docteur}" class="btn btn-primary btn-lg rounded-pill mt-auto">
+                    Espace Praticien
                 </a>
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="card choice-card shadow-sm p-4 border-top border-warning border-4">
+                <div class="icon-circle bg-warning-subtle text-warning">
+                    <i class="fas fa-user-shield fa-3x"></i>
+                </div>
+                <h3 class="fw-bold">Admin</h3>
+                <p class="text-muted small">Gérez les comptes, supervisez les docteurs et les patients (CRUD complet).</p>
+                <a th:href="@{/loginadmin}" class="btn btn-warning btn-lg rounded-pill text-dark mt-auto">
+                    Administrateur
+                </a>
+            </div>
+        </div>
+
     </div>
 
     <footer class="mt-5 text-muted">
-        <small>Ecole Nationale d'Informatique (ENI) - Projet L3</small>
+        <small>Ecole Nationale d'Informatique (ENI) - Projet de fin de cycle Licence 3</small>
     </footer>
 </div>
 
