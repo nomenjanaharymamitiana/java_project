@@ -19,4 +19,7 @@ public interface RdvRepository extends JpaRepository<Rdv, String> {
 
     @Query("SELECT r.idmed FROM Rdv r GROUP BY r.idmed ORDER BY COUNT(r.idmed) DESC")
     List<String> findTopDoctorIds(Pageable pageable);
+
+    @Query("SELECT r.idrdv FROM Rdv r WHERE r.idrdv LIKE CONCAT(?1, '%')")
+    List<String> findIdsByPrefix(String prefix);
 }

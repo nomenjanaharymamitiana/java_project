@@ -2,6 +2,7 @@ package com.medicin.demo.controller;
 
 import com.medicin.demo.model.Patient;
 import com.medicin.demo.repository.PatientRepository;
+import com.medicin.demo.service.IdGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,9 @@ public class PatientController {
     @Autowired
     private PatientRepository patientRepository;
 
+    @Autowired
+    private IdGeneratorService idGeneratorService;
+
     @GetMapping("/liste")
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
@@ -20,6 +24,9 @@ public class PatientController {
 
     @PostMapping("/inscription")
     public Patient createPatient(@RequestBody Patient patient) {
+        if (patient.getIdpat() == null || patient.getIdpat().isBlank()) {
+            patient.setIdpat(idGeneratorService.nextPatientId());
+        }
         return patientRepository.save(patient);
     }
 

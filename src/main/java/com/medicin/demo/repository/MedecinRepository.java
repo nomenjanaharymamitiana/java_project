@@ -2,6 +2,7 @@ package com.medicin.demo.repository;
 
 import com.medicin.demo.model.Medecin;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional; // IMPORTANT
@@ -14,4 +15,7 @@ public interface MedecinRepository extends JpaRepository<Medecin, String> {
 
     List<Medecin> findByNommedContaining(String nom);
     List<Medecin> findBySpecialite(String specialite);
+
+    @Query("SELECT m.idmed FROM Medecin m WHERE m.idmed LIKE CONCAT(?1, '%')")
+    List<String> findIdsByPrefix(String prefix);
 }

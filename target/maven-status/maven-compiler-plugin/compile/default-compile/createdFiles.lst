@@ -2,6 +2,7 @@ com/medicin/demo/DemoApplication.class
 com/medicin/demo/controller/RdvController.class
 com/medicin/demo/model/Rdv.class
 com/medicin/demo/repository/PatientRepository.class
+com/medicin/demo/service/IdGeneratorService.class
 com/medicin/demo/service/EmailService.class
 com/medicin/demo/repository/MedecinRepository.class
 com/medicin/demo/config/MailConfig.class

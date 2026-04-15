@@ -26,6 +26,12 @@ public class ViewController {
         return "medecin/liste"; 
     }
 
+    @GetMapping("/medecin/ajouter")
+    public String ajouterMedecinForm(Model model) {
+        model.addAttribute("medecin", new Medecin());
+        return "medecin/ajouter_docteur";
+    }
+
     @GetMapping("/loginadmin")
     public String pageLogin() {
         return "medecin/login-admin";

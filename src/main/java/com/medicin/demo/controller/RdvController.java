@@ -7,6 +7,7 @@ import com.medicin.demo.repository.MedecinRepository;
 import com.medicin.demo.repository.PatientRepository;
 import com.medicin.demo.repository.RdvRepository;
 import com.medicin.demo.service.EmailService;
+import com.medicin.demo.service.IdGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,6 +33,9 @@ public class RdvController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private IdGeneratorService idGeneratorService;
+
     @PostMapping("/reserver")
     public ResponseEntity<?> reserverRdv(@RequestBody Rdv rdv) {
         // 1. Vérifier si l'horaire est disponible
@@ -41,8 +45,8 @@ public class RdvController {
         }
 
         // 2. Enregistrer le RDV
-        if (rdv.getIdrdv() == null) {
-            rdv.setIdrdv(UUID.randomUUID().toString());
+        if (rdv.getIdrdv() == null || rdv.getIdrdv().isBlank()) {
+            rdv.setIdrdv(idGeneratorService.nextRdvId());
         }
         rdv.setStatus("CONFIRMED");
         Rdv saved = rdvRepository.save(rdv);
@@ -112,6 +116,38 @@ public class RdvController {
     @GetMapping("/liste")
     public List<Rdv> getAllRdvs() {
         return rdvRepository.findAll();
+    }
+
+    @GetMapping("/patient/{idpat}")
+    public List<Rdv> getRdvsByPatient(@PathVariable String idpat) {
+        return rdvRepository.findByIdpat(idpat);
+    }
+
+    @PutMapping("/modifier/{id}")
+    public ResponseEntity<?> updateRdv(@PathVariable String id, @RequestBody Rdv details) {
+        Optional<Rdv> rdvOpt = rdvRepository.findById(id);
+        if (rdvOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Rdv existing = rdvOpt.get();
+        Date newDate = details.getDateRdv() != null ? details.getDateRdv() : existing.getDateRdv();
+        String newMedecin = details.getIdmed() != null && !details.getIdmed().isBlank() ? details.getIdmed() : existing.getIdmed();
+        List<Rdv> slotConflict = rdvRepository.findByMedecinAndDate(newMedecin, newDate).stream()
+                .filter(r -> !r.getIdrdv().equals(id))
+                .toList();
+        if (!slotConflict.isEmpty()) {
+            return ResponseEntity.badRequest().body("Cet horaire est déjà réservé.");
+        }
+
+        existing.setIdmed(newMedecin);
+        if (details.getIdpat() != null && !details.getIdpat().isBlank()) {
+            existing.setIdpat(details.getIdpat());
+        }
+        existing.setDateRdv(newDate);
+        if (details.getStatus() != null && !details.getStatus().isBlank()) {
+            existing.setStatus(details.getStatus());
+        }
+        return ResponseEntity.ok(rdvRepository.save(existing));
     }
 
     @DeleteMapping("/supprimer/{id}")

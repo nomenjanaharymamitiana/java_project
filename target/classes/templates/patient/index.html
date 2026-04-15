@@ -59,7 +59,9 @@
                         <p class="small text-muted"><i class="fas fa-map-marker-alt me-1"></i> <span th:text="${med.lieu}">Lieu</span></p>
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <span class="badge bg-success" th:text="${med.taux_horaire} + ' Ar/h'">0 Ar</span>
-                            <button th:onclick="'ouvrirReservation(\'' + ${med.idmed} + '\')'" class="btn btn-sm btn-outline-info rounded-pill">Prendre RDV</button>
+                            <button th:attr="data-idmed=${med.idmed}"
+                                    onclick="ouvrirReservation(this.dataset.idmed)"
+                                    class="btn btn-sm btn-outline-info rounded-pill">Prendre RDV</button>
                         </div>
                     </div>
                 </div>
