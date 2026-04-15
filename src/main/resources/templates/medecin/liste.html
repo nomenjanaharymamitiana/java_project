@@ -17,8 +17,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li><a class="nav-link" href="/medecin"><i class="fas fa-home"></i> Accueil</a></li>
-                    <li><a class="nav-link active" href="/medecin/liste"><i class="fas fa-user-md"></i> Médecins</a></li>
+                    <li><a class="nav-link" th:href="@{/Admin-acceuil}"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a class="nav-link active" th:href="@{/medecin/liste-docteur}"><i class="fas fa-user-md"></i> Médecins</a></li>
                     <li><a class="nav-link" href="/patient"><i class="fas fa-user-injured"></i> Patients</a></li>
                 </ul>
             </div>
@@ -46,22 +46,25 @@
                 </thead>
                 <tbody>
                     <tr th:each="m : ${medecins}">
-                        <td th:text="${m.idmed}" class="text-muted small"></td>
-                        <td class="fw-bold" th:text="${m.nommed}">Dr. Nom</td>
-                        <td><span class="badge-spec" th:text="${m.specialite}">Spécialité</span></td>
-                        <td th:text="${m.lieu}">Ville</td>
-                        <td th:text="${m.taux_horaire} + ' Ar'">0 Ar</td>
-                        <td th:text="${m.email}">Email</td>
+                        <td th:text="${m.idmed}"></td>
+                        <td class="fw-bold" th:text="${m.nommed}"></td>
+                        <td><span class="badge-spec" th:text="${m.specialite}"></span></td>
+                        <td th:text="${m.lieu}"></td>
+                        <td th:text="${m.taux_horaire} + ' Ar'"></td>
+                        <td th:text="${m.email}"></td>
                         <td class="text-center">
                             <a th:href="@{/medecin/modifierdocteur/{id}(id=${m.idmed})}" 
-                               class="btn btn-sm btn-outline-secondary me-1 shadow-sm">
+                               class="btn btn-sm btn-outline-secondary me-1">
                                 <i class="fas fa-edit"></i>
                             </a>
                             
-                            <button class="btn btn-sm btn-outline-danger shadow-sm">
+                            <a th:href="@{/medecin/supprimer/{id}(id=${m.idmed})}" 
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Supprimer ce docteur ?')">
                                 <i class="fas fa-trash"></i>
-                            </button>
+                            </a>
                         </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

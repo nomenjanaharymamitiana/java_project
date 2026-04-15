@@ -1,17 +1,13 @@
 package com.medicin.demo.controller;
 
-import com.medicin.demo.model.Medecin; // VÉRIFIE BIEN CE CHEMIN
+import com.medicin.demo.model.Medecin;
 import com.medicin.demo.repository.MedecinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;   // AJOUTÉ
-import org.springframework.web.bind.annotation.RequestParam; // AJOUTÉ
-import java.util.Optional;                                   // AJOUTÉ
-import org.springframework.web.bind.annotation.PathVariable; // AJOUTÉ
-import org.springframework.web.bind.annotation.ModelAttribute; // AJOUTÉ
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 
 @Controller
 public class ViewController {
@@ -30,54 +26,86 @@ public class ViewController {
         return "medecin/liste"; 
     }
 
-    // Affiche la page de login (quand on clique sur le bouton dans index.html)
     @GetMapping("/loginadmin")
     public String pageLogin() {
         return "medecin/login-admin";
     }
-    //affiche la page d'acceuil 
+
     @GetMapping("/Admin-acceuil")
     public String pageAcceuil() {
         return "medecin/Admin-acceuil";
     }
 
-    // Reçoit les données du formulaire de login
+    // --- PATIENT VIEWS ---
+    @GetMapping("/patient")
+    public String indexPatient(Model model) {
+        model.addAttribute("medecins", medecinRepository.findAll());
+        return "patient/index";
+    }
+
+    @GetMapping("/patient/inscription")
+    public String formInscription() {
+        return "patient/inscription";
+    }
+
+    @GetMapping("/patient/mes-rendez-vous")
+    public String mesRdv() {
+        return "patient/mes-rdv";
+    }
+
+    // --- SEARCH & STATS ---
+    @GetMapping("/medecin/recherche")
+    public String pageRecherche() {
+        return "medecin/recherche";
+    }
+
+    @GetMapping("/medecin/top")
+    public String pageTopDoctors(Model model) {
+        // We'll let the frontend fetch via API or pass data here
+        return "medecin/top5";
+    }
+
+    @GetMapping("/medecin/rendez-vous")
+    public String pagePlanning() {
+        return "medecin/planning";
+    }
+
     @PostMapping("/loginadmin")
     public String authentification(@RequestParam("email") String email, 
                                    @RequestParam("password") String password, 
                                    Model model) {
-        
-        // DEBUG : Affiche dans ton terminal mamitianaKely
-        System.out.println("DEBUG >>> Tentative avec Email: [" + email + "] et Password: [" + password + "]");
-    
         Optional<Medecin> med = medecinRepository.findByEmailAndPassword(email, password);
-    
         if (med.isPresent()) {
-            System.out.println("DEBUG >>> MÉDECIN TROUVÉ : " + med.get().getNommed());
             return "redirect:/Admin-acceuil";
         } else {
-            System.out.println("DEBUG >>> AUCUN MÉDECIN TROUVÉ DANS POSTGRES");
             model.addAttribute("error", "Email ou mot de passe incorrect");
-            return "login-admin";
+            return "medecin/login-admin";
         }
     }
-    
-    // 1. Afficher le formulaire pré-rempli
-@GetMapping("/medecin/modifierdocteur/{id}")
-public String afficherFormulaireModification(@PathVariable("id") String id, Model model) {
-    Optional<Medecin> medecin = medecinRepository.findById(id);
-    if (medecin.isPresent()) {
-        model.addAttribute("medecin", medecin.get());
-        return "medecin/modifier_docteur"; // Nom du fichier HTML
-    }
-    return "redirect:/medecin/liste";
-}
 
-// 2. Enregistrer les modifications
-@PostMapping("/medecin/update")
-public String modifierMedecin(@ModelAttribute("medecin") Medecin medecin) {
-    // save() fait un "update" si l'ID existe déjà en base
-    medecinRepository.save(medecin); 
-    return "redirect:/medecin/liste";
-}
+    // AFFICHER LE FORMULAIRE
+    @GetMapping("/medecin/modifierdocteur/{id}")
+    public String afficherFormulaire(@PathVariable("id") String id, Model model) {
+        Optional<Medecin> med = medecinRepository.findById(id);
+        if (med.isPresent()) {
+            model.addAttribute("medecin", med.get());
+            // VERIFIE BIEN LE NOM DE CE FICHIER SUR TON DISQUE DUR
+            return "medecin/modifier_docteur"; 
+        }
+        return "redirect:/medecin/liste-docteur";
+    }
+
+    // ENREGISTRER
+    @PostMapping("/medecin/update")
+    public String modifierMedecin(@ModelAttribute("medecin") Medecin medecin) {
+        medecinRepository.save(medecin); 
+        return "redirect:/medecin/liste-docteur";
+    }
+
+    // SUPPRIMER
+    @GetMapping("/medecin/supprimer/{id}")
+    public String supprimerMedecin(@PathVariable("id") String id) {
+        medecinRepository.deleteById(id);
+        return "redirect:/medecin/liste-docteur";
+    }
 }

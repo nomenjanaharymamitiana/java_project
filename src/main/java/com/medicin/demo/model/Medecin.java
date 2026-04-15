@@ -13,9 +13,10 @@ public class Medecin {
     private String lieu;
     private String email;
     private String password;
+
     public Medecin() {}
 
-    // Getters et Setters
+    // Getters et Setters existants
     public String getIdmed() { return idmed; }
     public void setIdmed(String idmed) { this.idmed = idmed; }
     public String getNommed() { return nommed; }
@@ -29,5 +30,7 @@ public class Medecin {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-
+    // AJOUTÉS : Indispensables pour le Password
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }

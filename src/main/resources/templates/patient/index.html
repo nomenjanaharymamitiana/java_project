@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Espace Patient | MediAdmin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info py-3">
+        <div class="container">
+            <a class="navbar-brand" href="/patient"><i class="fas fa-heartbeat me-2"></i>MediAdmin Patient</a>
+            <div class="ms-auto">
+                <a href="/patient/mes-rendez-vous" class="btn btn-light btn-sm rounded-pill px-3">Mes RDV</a>
+                <a href="/medecin" class="btn btn-outline-light btn-sm rounded-pill px-3">Retour</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2>Trouver un Médecin</h2>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="/patient/inscription" class="btn btn-primary">S'inscrire comme Patient</a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm p-4 mb-4">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" id="searchNom" class="form-control" placeholder="Rechercher par nom...">
+                </div>
+                <div class="col-md-4">
+                    <select id="searchSpec" class="form-select">
+                        <option value="">Toutes les spécialités</option>
+                        <option value="Généraliste">Généraliste</option>
+                        <option value="Cardiologue">Cardiologue</option>
+                        <option value="Dentiste">Dentiste</option>
+                        <option value="Pédiatre">Pédiatre</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button onclick="filtrer()" class="btn btn-info w-100 text-white">Filtrer</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="medecinList">
+            <div class="col" th:each="med : ${medecins}">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-user-md fa-4x text-info opacity-50"></i>
+                        </div>
+                        <h5 class="card-title fw-bold" th:text="${med.nommed}">Nom</h5>
+                        <p class="text-muted mb-1" th:text="${med.specialite}">Spécialité</p>
+                        <p class="small text-muted"><i class="fas fa-map-marker-alt me-1"></i> <span th:text="${med.lieu}">Lieu</span></p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="badge bg-success" th:text="${med.taux_horaire} + ' Ar/h'">0 Ar</span>
+                            <button th:onclick="'ouvrirReservation(\'' + ${med.idmed} + '\')'" class="btn btn-sm btn-outline-info rounded-pill">Prendre RDV</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Réservation -->
+    <div class="modal fade" id="modalReservation" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Prendre un Rendez-vous</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formRdv">
+                        <input type="hidden" id="idmed">
+                        <div class="mb-3">
+                            <label class="form-label">Votre ID Patient</label>
+                            <input type="text" id="idpat" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" id="dateRdv" class="form-control" required onchange="chargerHoraires()">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Heure disponible</label>
+                            <select id="heureRdv" class="form-select" required>
+                                <option value="">Choisir une date d'abord</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" onclick="reserver()" class="btn btn-info text-white">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const modal = new bootstrap.Modal(document.getElementById('modalReservation'));
+
+        function ouvrirReservation(idmed) {
+            document.getElementById('idmed').value = idmed;
+            modal.show();
+        }
+
+        async function chargerHoraires() {
+            const idmed = document.getElementById('idmed').value;
+            const date = document.getElementById('dateRdv').value;
+            if (!date) return;
+
+            const res = await fetch(`/api/rdv/disponibilites/${idmed}?date=${date}`);
+            const hours = await res.json();
+            const select = document.getElementById('heureRdv');
+            select.innerHTML = '';
+            
+            if (hours.length === 0) {
+                select.innerHTML = '<option value="">Aucun horaite disponible</option>';
+            } else {
+                hours.forEach(h => {
+                    const opt = document.createElement('option');
+                    opt.value = h;
+                    opt.textContent = h;
+                    select.appendChild(opt);
+                });
+            }
+        }
+
+        async function reserver() {
+            const rdv = {
+                idmed: document.getElementById('idmed').value,
+                idpat: document.getElementById('idpat').value,
+                dateRdv: new Date(document.getElementById('dateRdv').value + 'T' + document.getElementById('heureRdv').value + ':00')
+            };
+
+            const res = await fetch('/api/rdv/reserver', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(rdv)
+            });
+
+            if (res.ok) {
+                alert('Rendez-vous réservé avec succès !');
+                modal.hide();
+            } else {
+                const err = await res.text();
+                alert('Erreur: ' + err);
+            }
+        }
+
+        async function filtrer() {
+            const nom = document.getElementById('searchNom').value;
+            const spec = document.getElementById('searchSpec').value;
+            let url = '/api/medecins/recherche?nom=' + nom;
+            if (spec) {
+                url = '/api/medecins/specialite/' + spec;
+            }
+
+            const res = await fetch(url);
+            const meds = await res.json();
+            const container = document.getElementById('medecinList');
+            container.innerHTML = '';
+
+            meds.forEach(med => {
+                container.innerHTML += `
+                    <div class="col">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <i class="fas fa-user-md fa-4x text-info opacity-50"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">${med.nommed}</h5>
+                                <p class="text-muted mb-1">${med.specialite}</p>
+                                <p class="small text-muted"><i class="fas fa-map-marker-alt me-1"></i> ${med.lieu}</p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="badge bg-success">${med.taux_horaire} Ar/h</span>
+                                    <button onclick="ouvrirReservation('${med.idmed}')" class="btn btn-sm btn-outline-info rounded-pill">Prendre RDV</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>

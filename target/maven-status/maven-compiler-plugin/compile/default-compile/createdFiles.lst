@@ -1,9 +1,13 @@
 com/medicin/demo/DemoApplication.class
-com/medicin/demo/controller/PatientController.class
+com/medicin/demo/controller/RdvController.class
 com/medicin/demo/model/Rdv.class
 com/medicin/demo/repository/PatientRepository.class
+com/medicin/demo/service/EmailService.class
+com/medicin/demo/repository/MedecinRepository.class
+com/medicin/demo/config/MailConfig.class
+com/medicin/demo/controller/PatientController.class
 com/medicin/demo/model/Medecin.class
+com/medicin/demo/repository/RdvRepository.class
 com/medicin/demo/controller/MedecinController.class
 com/medicin/demo/model/Patient.class
-com/medicin/demo/repository/MedecinRepository.class
 com/medicin/demo/controller/ViewController.class

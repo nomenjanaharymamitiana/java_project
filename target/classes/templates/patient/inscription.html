@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription Patient | MediAdmin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Inscription Nouveau Patient</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="formInscription">
+                            <div class="mb-3">
+                                <label class="form-label">ID Patient (ex: P001)</label>
+                                <input type="text" id="idpat" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nom complet</label>
+                                <input type="text" id="nom_pat" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Date de naissance</label>
+                                <input type="date" id="datenais" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email (pour confirmation)</label>
+                                <input type="email" id="email" class="form-control" required>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="button" onclick="inscrire()" class="btn btn-primary">S'inscrire</button>
+                                <a href="/patient" class="btn btn-outline-secondary">Retour</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function inscrire() {
+            const patient = {
+                idpat: document.getElementById('idpat').value,
+                nom_pat: document.getElementById('nom_pat').value,
+                datenais: document.getElementById('datenais').value,
+                email: document.getElementById('email').value
+            };
+
+            const res = await fetch('/api/patients/inscription', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(patient)
+            });
+
+            if (res.ok) {
+                alert('Inscription réussie !');
+                window.location.href = '/patient';
+            } else {
+                alert('Erreur lors de l\'inscription');
+            }
+        }
+    </script>
+</body>
+</html>
